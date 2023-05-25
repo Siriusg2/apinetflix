@@ -16,13 +16,13 @@ public class ProfileValidations {
   @Autowired
   ProfileRepository profileRepository;
 
+  @Autowired
   UserRepository userRepository;
 
-  public void saveProfileValidation(ProfilesModel newProfile, Long userId)
-    throws Exception {
+  public void saveProfileValidation(Long userId) throws Exception {
     Optional<UsersModel> existingUser = userRepository.findById(userId);
 
-    if (existingUser.isPresent()) {
+    if (existingUser.get() != null) {
       UsersModel user = existingUser.get();
 
       PlanModel userPlan = user.getPlan();

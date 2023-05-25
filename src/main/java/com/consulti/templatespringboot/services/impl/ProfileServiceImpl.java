@@ -1,72 +1,97 @@
 package com.consulti.templatespringboot.services.impl;
 
+import com.consulti.templatespringboot.models.*;
+import com.consulti.templatespringboot.repositories.ProfileRepository;
+import com.consulti.templatespringboot.repositories.UserRepository;
+import com.consulti.templatespringboot.services.*;
+import com.consulti.templatespringboot.utils.validations.ProfileValidations;
 import java.util.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.consulti.templatespringboot.models.*;
-import com.consulti.templatespringboot.repositories.ProfileRepository;
-import com.consulti.templatespringboot.services.*;
-import com.consulti.templatespringboot.utils.validations.ProfileValidations;
-
 @Service
 public class ProfileServiceImpl implements ProfileService {
-    
-    @Autowired 
-    ProfileRepository   profileRepository;
 
-    @Autowired
-    ProfileValidations profileValidations;
+  @Autowired
+  ProfileRepository profileRepository;
 
-    @Override
-    public List<ProfilesModel> listar() throws Exception {
-       return profileRepository.findAll();
-    }
+  @Autowired
+  ProfileValidations profileValidations;
 
-    @Override
-    public ProfilesModel save(ProfilesModel request) throws Exception {
-      try {
-        return profileRepository.save(request);
-      } catch (Exception e) {
-        throw new Exception(
-          "Error al guardar el perfil: " + e.getMessage()
-        );
-      }
-    }
+  @Autowired
+  UserRepository userRepository;
 
-    @Override
-    public ProfilesModel update(ProfilesModel profile) throws Exception {
-      Optional<ProfilesModel> optional = profileRepository.findById(
-        profile.getId()
-      );
-      if (optional.isPresent()) {
-        ProfilesModel existingProfile = optional.get();
-        existingProfile.setName(profile.getName());
-    
-        existingProfile.setModifiedDate(profile.getModifiedDate());
-    
-        existingProfile.setModifiedBy(profile.getModifiedBy());
-     
-        // Guardamos los cambios en la base de datos
-        return profileRepository.save(existingProfile);
-      } else {
-        throw new Exception("No se encontró el registro a actualizar");
-      }
-    }
+  @Override
+  public List<ProfilesModel> getAllProfiles(String idRequester)
+    throws Exception {
+    Long parseId = Long.valueOf(idRequester);
+    Optional<UsersModel> queryUser = userRepository.findById(parseId);
+    UsersModel user = queryUser.get();
 
-    @Override
-  public Boolean delete(Long idProfile) throws Exception {
-    try {
-        profileRepository.deleteById(idProfile);
-      return true;
-    } catch (Exception e) {
-      throw new Exception(
-        "Error borrando el perfil con id " +
-        idProfile +
-        ": " +
-        e.getMessage()
-      );
-    }
+    if (user == null) throw new Exception("no existe el usuario ");
+
+    List<ProfilesModel> userProfiles = user.getProfiles();
+    List<ProfilesModel> allProfiles = profileRepository.findAll();
+
+    if (user.getRole().getId() == 1) return allProfiles;
+
+    if (user.getRole().getId() == 2) return userProfiles;
+
+    return null;
+  }
+
+  @Override
+  public ProfilesModel createProfile(
+    String userId,
+    String newProfileName,
+    String newProfileDateBorn
+  ) throws Exception {
+    Long parseId = Long.valueOf(userId);
+
+    Optional<UsersModel> queryUser = userRepository.findById(parseId);
+    UsersModel user = queryUser.get();
+
+    profileValidations.saveProfileValidation(parseId);
+
+    ProfilesModel newProfile = new ProfilesModel();
+
+    newProfile.setName(newProfileName);
+    newProfile.setDateOfBirth(newProfileDateBorn);
+    newProfile.setCreatedBy(user.getEmail());
+    newProfile.setUser(user);
+
+    ProfilesModel savedProfile = profileRepository.save(newProfile);
+    return savedProfile;
+  }
+
+  @Override
+  public ProfilesModel updateProfile(
+    Long profileId,
+    String userId,
+    String newProfileName,
+    String newProfileDateBorn
+  ) throws Exception {
+    Optional<ProfilesModel> profileQuery = profileRepository.findById(
+      profileId
+    );
+
+    ProfilesModel profile = profileQuery.get();
+
+    profile.setDateOfBirth(newProfileDateBorn);
+    profile.setName(newProfileName);
+    ProfilesModel updatedProfile = profileRepository.save(profile);
+
+    return updatedProfile;
+  }
+
+  @Override
+  public Boolean deleteProfile(Long profileId) throws Exception {
+    Optional<ProfilesModel> profileQuery = profileRepository.findById(
+      profileId
+    );
+    ProfilesModel profile = profileQuery.get();
+    profileRepository.delete(profile);
+
+    return true;
   }
 }

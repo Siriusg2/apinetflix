@@ -1,10 +1,6 @@
 package com.consulti.templatespringboot.repositories;
 
+import com.consulti.templatespringboot.models.ProfilesModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
-import com.consulti.templatespringboot.models.ProfilesModel;
-
-public interface ProfileRepository extends JpaRepository<ProfilesModel, Long> {
-    
-}
+public interface ProfileRepository extends JpaRepository<ProfilesModel, Long> {}

@@ -1,6 +1,7 @@
 package com.consulti.templatespringboot.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.*;
 import lombok.Data;
@@ -52,6 +53,7 @@ public class ProfilesModel {
   private String modifiedBy;
 
   @ManyToOne
+  @JsonIgnore
   @JoinColumn(name = "user_id")
   private UsersModel user;
 }
