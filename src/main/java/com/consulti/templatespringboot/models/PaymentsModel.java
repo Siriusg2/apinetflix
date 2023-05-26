@@ -1,6 +1,7 @@
 package com.consulti.templatespringboot.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.*;
 import javax.persistence.*;
 import lombok.Data;
@@ -25,9 +26,6 @@ public class PaymentsModel {
   @Column(name = "payment_id", unique = true, updatable = false)
   private Long id;
 
-  @Column(unique = true)
-  private String period;
-
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -50,5 +48,6 @@ public class PaymentsModel {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @JsonIgnore
   private UsersModel payment;
 }
