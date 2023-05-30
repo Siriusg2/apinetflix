@@ -2,8 +2,6 @@ package com.consulti.templatespringboot.utils.validations;
 
 import com.consulti.templatespringboot.models.UsersModel;
 import com.consulti.templatespringboot.repositories.UserRepository;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,25 +34,6 @@ public class UsersValidations {
     if (!newUserDateBorn.matches("\\d{4}-\\d{2}-\\d{2}")) {
       throw new Exception(
         "El campo fecha de nacimiento debe tener el formato: yyyy-MM-dd"
-      );
-    }
-  }
-
-  public Boolean validationAge(String userDateBorn) throws Exception {
-    try {
-      String date = userDateBorn;
-      LocalDate dateBorn = LocalDate.parse(date);
-
-      long edad = ChronoUnit.YEARS.between(dateBorn, LocalDate.now());
-
-      if (edad >= 18) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (Exception e) {
-      throw new Exception(
-        "No es posible parsear el dato de la fecha al tipo de dato LocalDate"
       );
     }
   }

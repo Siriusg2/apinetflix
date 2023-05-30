@@ -5,6 +5,8 @@ import com.consulti.templatespringboot.models.ProfilesModel;
 import com.consulti.templatespringboot.models.UsersModel;
 import com.consulti.templatespringboot.repositories.ProfileRepository;
 import com.consulti.templatespringboot.repositories.UserRepository;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +54,24 @@ public class ProfileValidations {
         );
       }
     } else throw new Exception("No existe el usuario");
+  }
+
+  public Boolean validationAge(String userDateBorn) throws Exception {
+    try {
+      String date = userDateBorn;
+      LocalDate dateBorn = LocalDate.parse(date);
+
+      long edad = ChronoUnit.YEARS.between(dateBorn, LocalDate.now());
+
+      if (edad >= 18) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (Exception e) {
+      throw new Exception(
+        "No es posible parsear el dato de la fecha al tipo de dato LocalDate"
+      );
+    }
   }
 }

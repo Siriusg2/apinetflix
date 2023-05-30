@@ -90,8 +90,8 @@ public class ProfileServiceImpl implements ProfileService {
       profileId
     );
     ProfilesModel profile = profileQuery.get();
-    profileRepository.delete(profile);
-
+    profile.setIsActive(false);
+    profileRepository.save(profile);
     return true;
   }
 }
