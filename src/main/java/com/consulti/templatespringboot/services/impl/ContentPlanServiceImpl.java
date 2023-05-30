@@ -84,13 +84,13 @@ public class ContentPlanServiceImpl implements ContentPlanService {
     List<ContentPlanModel> userPlanContent = user.getPlan().getContent();
     List<String> allContent = new ArrayList<>();
 
-    if (AdultOrKidAge) {
+    if (AdultOrKidAge == true) {
       for (ContentPlanModel content : userPlanContent) {
         allContent.add(content.getExternalEndpoint());
       }
     } else {
       for (ContentPlanModel content : userPlanContent) {
-        if (content.getName() != "Contenido para Adultos") {
+        if (!content.getName().equalsIgnoreCase("Contenido para Adultos")) {
           allContent.add(content.getExternalEndpoint());
         }
       }

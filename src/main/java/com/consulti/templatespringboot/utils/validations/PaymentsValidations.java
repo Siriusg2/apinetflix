@@ -51,7 +51,7 @@ public class PaymentsValidations {
 
       if (daysElapsed > 7) {
         throw new Exception(
-          "Han caducado tu periodo de prueba de 7 dias, para continuar disfrutando del contenido realiza un pago"
+          "Ha caducado tu periodo de prueba de 7 dias, para continuar disfrutando del contenido realiza un pago"
         );
       }
     } else {
